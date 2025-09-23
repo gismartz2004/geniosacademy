@@ -1,25 +1,27 @@
 <?php
 // -----------------------------
-// Configuración de la base de datos (Cloud SQL IP pública)
+// Configuración de la base de datos (Cloud SQL socket)
 // -----------------------------
 
 // Variables de entorno definidas en Cloud Run:
-// DB_NAME, DB_USER, DB_PASSWORD
-
+// CLOUD_SQL_CONNECTION_NAME, DB_NAME, DB_USER, DB_PASSWORD
 $cloud_sql_connection_name = getenv('geniosacademy-473002:us-central1:geniosacademy'); // proyecto:region:instancia
 $db_name = getenv('geniosacademy');       // Nombre de la base de datos
 $db_user = getenv('gismar');       // Usuario de la DB
 $db_password = getenv('1234'); // Contraseña
 
+if (!$cloud_sql_connection_name || !$db_name || !$db_user || !$db_password) {
+    die("Faltan variables de entorno necesarias para la conexión a la base de datos.");
+}
+
 try {
     $pdo = new PDO(
-        "mysql:host=$db_host;dbname=$db_name;charset=utf8",
+        "mysql:unix_socket=/cloudsql/$cloud_sql_connection_name;dbname=$db_name;charset=utf8",
         $db_user,
         $db_password
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    // Error de conexión
     die("Error de conexión a la base de datos: " . $e->getMessage());
 }
 
@@ -41,6 +43,6 @@ if (session_status() === PHP_SESSION_NONE) {
 // Zona horaria
 date_default_timezone_set('America/Mexico_City');
 
-// Mostrar errores (solo desarrollo)
+// Mostrar errores (solo para desarrollo)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
