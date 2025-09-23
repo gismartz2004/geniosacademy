@@ -5,7 +5,8 @@
 
 // Variables de entorno definidas en Cloud Run:
 // DB_NAME, DB_USER, DB_PASSWORD
-$db_host = '35.232.71.57';  // IP pública de tu instancia
+
+$cloud_sql_connection_name = getenv('geniosacademy-473002:us-central1:geniosacademy'); // proyecto:region:instancia
 $db_name = getenv('geniosacademy');       // Nombre de la base de datos
 $db_user = getenv('gismar');       // Usuario de la DB
 $db_password = getenv('1234'); // Contraseña
