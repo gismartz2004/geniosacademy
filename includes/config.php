@@ -5,10 +5,10 @@
 
 // Variables de entorno definidas en Cloud Run:
 // CLOUD_SQL_CONNECTION_NAME, DB_NAME, DB_USER, DB_PASSWORD
-$cloud_sql_connection_name = getenv('geniosacademy-473002:us-central1:geniosacademy'); // proyecto:region:instancia
-$db_name = getenv('geniosacademy');       // Nombre de la base de datos
-$db_user = getenv('gismar');       // Usuario de la DB
-$db_password = getenv('1234'); // Contraseña
+$cloud_sql_connection_name = getenv('CLOUD_SQL_CONNECTION_NAME'); // proyecto:region:instancia
+$db_name = getenv('DB_NAME');       // Nombre de la base de datos
+$db_user = getenv('DB_USER');       // Usuario de la DB
+$db_password = getenv('DB_PASSWORD'); // Contraseña
 
 if (!$cloud_sql_connection_name || !$db_name || !$db_user || !$db_password) {
     die("Faltan variables de entorno necesarias para la conexión a la base de datos.");
