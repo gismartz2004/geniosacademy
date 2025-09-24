@@ -1,21 +1,18 @@
-# Imagen base con PHP + Apache
-FROM php:8.1-apache
+FROM php:8.2-apache
 
-# Copiar archivos del proyecto al contenedor
+# Instalar extensiones necesarias
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Copiar el código de la app al DocumentRoot de Apache
 COPY . /var/www/html/
 
 # Cambiar permisos
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Instalar extensiones necesarias para MySQL
-RUN docker-php-ext-install pdo pdo_mysql mysqli
-
-# Configurar Apache para que escuche en el puerto 8080
-RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's/80/8080/g' /etc/apache2/ports.conf
-
-# Cloud Run usa el puerto 8080
+# Exponer puerto que Cloud Run espera
 EXPOSE 8080
+ENV PORT 8080
 
-# Iniciar Apache en primer plano
+# Apache ya está configurado para /var/www/html
 CMD ["apache2-foreground"]
