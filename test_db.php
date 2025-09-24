@@ -1,6 +1,27 @@
 <?php
-require 'includes/config.php';
+// test-connection.php
+$instance = getenv('INSTANCE_CONNECTION_NAME');
+$dbname = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASS');
 
-$stmt = $pdo->query("SELECT NOW() AS fecha");
-$row = $stmt->fetch();
-echo "✅ Conexión correcta. Fecha desde MySQL: " . $row['fecha'];
+// Conexión via Unix Socket
+$socketPath = "/cloudsql/{$instance}";
+$dsn = "mysql:unix_socket={$socketPath};dbname={$dbname}";
+
+try {
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+    echo "🎉 ¡Conexión exitosa!";
+    
+    // Probar consulta simple
+    $stmt = $pdo->query("SELECT 1 as test");
+    $result = $stmt->fetch();
+    echo "✅ Consulta testeada correctamente";
+    
+} catch (PDOException $e) {
+    echo "❌ Error: " . $e->getMessage();
+    echo "<br>Socket path: " . $socketPath;
+}
+?>
